@@ -11,11 +11,11 @@ def main():
     try:
         # Conectar al servidor
         client_socket.connect((SERVER_IP, PORT))
-        print("Conectado al servidor\n")
+        print("Conectado al servidor")
         
         # Recibir el menú del servidor
         menu = client_socket.recv(BUFFER_SIZE).decode('utf-8')
-        print(f"\n{menu}\n")
+        print(f"{menu}\n")
         
         while True:
             # Leer mensaje del usuario

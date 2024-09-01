@@ -10,45 +10,49 @@
 const char *vocales = "aeiou";
 const char *consonantes = "bcdfghjklmnpqrstvwxyz";
 const char *alfanumerico = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const char *menu = "\nIndique su eleccion: \n 1. Generar Usuario \n 2. Generar Contrasena \n\n 0. Finalizar conexion \n";
+const char *menu = "\n--------------------------------------- \nIndique su eleccion: \n 1. Generar Usuario \n 2. Generar Contrasena \n\n 0. Finalizar conexion \n";
+const char *exito = " - Operacion realizada con exito! - ";
 const char *aux = " - Oprima Enter para Continuar - ";
+const char *fallo = " - Longitud Invalida - ";
 
-void generarUsuario(int length, char *user) {
+
+void generarUsuario(int length, char *user, SOCKET clientSocket) {
     if (length < 5 || length > 15) {
-        strcpy(user, " - Longitud Invalida - ");
-        printf(" - Longitud Invalida - \n");
-        return;
-    }
+        strcpy(user, fallo);
+        printf("%s\n", fallo);
+    } else {
+        const char *letraActual;
+        int esVocal = rand() % 2; // 0 - 1
 
-    const char *letraActual;
-    int esVocal = rand() % 2; // 0 - 1
-
-    for (int i = 0; i < length; i++) {
-        if (esVocal) {
-            letraActual = vocales;
-        } else {
-            letraActual = consonantes;
+        for (int i = 0; i < length; i++) {
+            if (esVocal) {
+                letraActual = vocales;
+            } else {
+                letraActual = consonantes;
+            }
+            user[i] = letraActual[rand() % strlen(letraActual)];
+            esVocal = !esVocal; // Alternar entre vocales y consonantes
         }
-
-        user[i] = letraActual[rand() % strlen(letraActual)];
-        esVocal = !esVocal; // Alternar entre vocales y consonantes
+        user[length] = '\0';
+        printf("Usuario: %s\n", user);
+        strcpy(user, exito);
     }
-    user[length] = '\0';
-    printf("Usuario: %s\n", user);
+    send(clientSocket, user, strlen(user), 0);
 }
 
-void generarContrasena(int length, char *password) {
+void generarContrasena(int length, char *password, SOCKET clientSocket) {
     if (length < 8 || length >= 50) {
-        strcpy(password, " - Longitud Invalida - ");
-        printf(" - Longitud Invalida - \n");
-        return;
-    }
-
-    for (int i = 0; i < length; i++) {
+        strcpy(password, fallo);
+        printf("%s\n", fallo);
+    } else {
+        for (int i = 0; i < length; i++) {
         password[i] = alfanumerico[rand() % strlen(alfanumerico)];
-    }
+        }
     password[length] = '\0';
     printf("Contrasena: %s\n", password);
+    strcpy(password, exito);
+    }
+    send(clientSocket, password, strlen(password), 0);
 }
 
 void controlCliente(SOCKET clientSocket) {
@@ -75,9 +79,8 @@ void controlCliente(SOCKET clientSocket) {
                 longRec = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
                 buffer[longRec] = '\0';
                 longitud = atoi(buffer);
-                generarUsuario(longitud, response);
                 send(clientSocket, aux, strlen(aux), 0);
-                send(clientSocket, response, strlen(response), 0);
+                generarUsuario(longitud, response, clientSocket);
                 break;
             case 2:
                 indicar = "\nIndique Longitud (valor entre 8 y 50)";
@@ -85,15 +88,14 @@ void controlCliente(SOCKET clientSocket) {
                 longRec = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
                 buffer[longRec] = '\0';
                 longitud = atoi(buffer);
-                generarContrasena(longitud, response);
                 send(clientSocket, aux, strlen(aux), 0);
-                send(clientSocket, response, strlen(response), 0);
+                generarContrasena(longitud, response, clientSocket);
                 break;
             default:
-                error = "- Comando no reconocido - \n";
-                printf("%s", error);
+                error = "- Comando no reconocido - ";
+                printf("%s\n", error);
+                send(clientSocket, aux, strlen(aux), 0);
                 send(clientSocket, error, strlen(error), 0);
-                break;
             }
             send(clientSocket, menu, strlen(menu), 0);
 

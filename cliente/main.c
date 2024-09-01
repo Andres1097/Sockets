@@ -43,12 +43,12 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    printf("Conectado al servidor\n\n");
+    printf("Conectado al servidor\n");
 
     // Recepcion del menu inicial
     int menu = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
     buffer[menu] = '\0';
-    printf("\n%s\n", buffer);
+    printf("%s\n", buffer);
 
 
     while (1) {
