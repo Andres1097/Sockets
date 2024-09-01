@@ -36,7 +36,7 @@ def main():
                 print("Conexión cerrada por el servidor")
                 break
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error code: {e}")
     finally:
         # Cerrar el socket
         client_socket.close()
