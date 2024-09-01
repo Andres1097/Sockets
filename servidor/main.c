@@ -16,6 +16,7 @@ const char *aux = " - Oprima Enter para Continuar - ";
 void generarUsuario(int length, char *user) {
     if (length < 5 || length > 15) {
         strcpy(user, " - Longitud Invalida - ");
+        printf(" - Longitud Invalida - \n");
         return;
     }
 
@@ -39,6 +40,7 @@ void generarUsuario(int length, char *user) {
 void generarContrasena(int length, char *password) {
     if (length < 8 || length >= 50) {
         strcpy(password, " - Longitud Invalida - ");
+        printf(" - Longitud Invalida - \n");
         return;
     }
 
@@ -88,7 +90,8 @@ void controlCliente(SOCKET clientSocket) {
                 send(clientSocket, response, strlen(response), 0);
                 break;
             default:
-                error = "Comando no reconocido";
+                error = "- Comando no reconocido - \n";
+                printf("%s", error);
                 send(clientSocket, error, strlen(error), 0);
                 break;
             }
