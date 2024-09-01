@@ -45,6 +45,7 @@ int main() {
 
     printf("Conectado al servidor\n\n");
 
+    // Recepcion del menu inicial
     int menu = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
     buffer[menu] = '\0';
     printf("\n%s\n", buffer);

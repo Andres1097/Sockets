@@ -95,10 +95,10 @@ void controlCliente(SOCKET clientSocket) {
             send(clientSocket, menu, strlen(menu), 0);
 
         } else if (recvSize == 0) {
-            printf("Conexion cerrada por el cliente\n");
+            printf("Error al recibir datos. Error code: %d\n", WSAGetLastError());
             break;
         } else {
-            printf("Error al recibir datos. Error code: %d\n", WSAGetLastError());
+            printf("Conexion cerrada por el cliente\n");
             break;
         }
     }
