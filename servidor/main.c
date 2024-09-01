@@ -91,6 +91,7 @@ void controlCliente(SOCKET clientSocket) {
                 send(clientSocket, aux, strlen(aux), 0);
                 generarContrasena(longitud, response, clientSocket);
                 break;
+            case 0: break;
             default:
                 error = "- Comando no reconocido - ";
                 printf("%s\n", error);
